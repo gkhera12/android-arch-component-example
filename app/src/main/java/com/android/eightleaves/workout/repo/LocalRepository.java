@@ -1,0 +1,42 @@
+package com.android.eightleaves.workout.repo;
+
+
+import android.arch.lifecycle.LiveData;
+import android.content.Context;
+
+
+import com.android.eightleaves.workout.db.DatabaseCreator;
+import com.android.eightleaves.workout.db.dao.WorkoutDao;
+import com.android.eightleaves.workout.db.entity.WorkoutEntity;
+
+import java.util.List;
+
+public class LocalRepository {
+
+    private static final Object LOCK = new Object();
+    private static LocalRepository sInstance;
+    private WorkoutDao workoutDao ;
+
+    public synchronized static LocalRepository getInstance(Context context) {
+        if (sInstance == null) {
+            synchronized (LOCK) {
+                if (sInstance == null) {
+                    sInstance = new LocalRepository(context);
+                }
+            }
+        }
+        return sInstance;
+    }
+
+    private LocalRepository(Context context) {
+        this.workoutDao = DatabaseCreator.getInstance(context).getDatabase().workoutDao();
+    }
+
+    public LiveData<List<WorkoutEntity>> getWorkouts() {
+        return workoutDao.loadAllWorkouts();
+    }
+
+    public void saveWorkouts(List<WorkoutEntity> workouts) {
+        workoutDao.insertAll(workouts);
+    }
+}
