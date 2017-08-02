@@ -6,15 +6,12 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.eightleaves.workout.R;
-import com.android.eightleaves.workout.core.CyclingFragmentController;
-import com.android.eightleaves.workout.core.ITabSwitch;
-import com.android.eightleaves.workout.databinding.FragmentWorkoutListBinding;
+import com.android.eightleaves.workout.databinding.FragmentWorkoutBinding;
 import com.android.eightleaves.workout.db.entity.WorkoutEntity;
 import com.android.eightleaves.workout.model.Workout;
 import com.android.eightleaves.workout.workout.viewmodel.WorkoutViewModel;
@@ -34,7 +31,7 @@ public class WorkoutFragment extends LifecycleFragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private FragmentWorkoutListBinding mBinding;
+    private FragmentWorkoutBinding mBinding;
     private WorkoutRecyclerViewAdapter mWorkoutAdapter;
     List<Float> dataList = new ArrayList<>();
     /**
@@ -66,7 +63,7 @@ public class WorkoutFragment extends LifecycleFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_workout_list, container, false);
+        mBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_workout, container, false);
 
         mWorkoutAdapter = new WorkoutRecyclerViewAdapter(this);
         mBinding.list.setAdapter(mWorkoutAdapter);
@@ -76,9 +73,9 @@ public class WorkoutFragment extends LifecycleFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        WorkoutViewModel.Factory factory = new WorkoutViewModel.Factory(getActivity().getApplication());
         final WorkoutViewModel viewModel =
-                ViewModelProviders.of(this).get(WorkoutViewModel.class);
-
+                ViewModelProviders.of(this, factory).get(WorkoutViewModel.class);
         subscribeUi(viewModel);
     }
 
@@ -88,7 +85,10 @@ public class WorkoutFragment extends LifecycleFragment {
             @Override
             public void onChanged(@Nullable List<WorkoutEntity> myWorkouts) {
                 if (myWorkouts != null) {
+                    mBinding.setIsLoading(false);
                     mWorkoutAdapter.setWorkoutList(myWorkouts);
+                } else {
+                    mBinding.setIsLoading(true);
                 }
             }
         });

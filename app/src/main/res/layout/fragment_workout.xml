@@ -2,9 +2,31 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="isLoading"
+            type="boolean" />
+
+    </data>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loading_workouts"
+            android:text="@string/loading_workouts"
+            android:visibility="@{isLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
             android:name="com.eightleaves.fitnesscycling.WorkoutFragment"
@@ -12,7 +34,7 @@
             android:layout_height="0dp"
             app:layoutManager="LinearLayoutManager"
             tools:context="com.eightleaves.fitnesscycling.workout.view.WorkoutFragment"
-            tools:listitem="@layout/fragment_workout"
+            tools:listitem="@layout/workout_item"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent"

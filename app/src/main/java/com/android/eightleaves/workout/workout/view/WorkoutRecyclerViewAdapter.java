@@ -67,7 +67,7 @@ public class WorkoutRecyclerViewAdapter extends RecyclerView.Adapter<WorkoutRecy
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_workout, parent, false);
+                .inflate(R.layout.workout_item, parent, false);
         return new ViewHolder(view);
     }
 
