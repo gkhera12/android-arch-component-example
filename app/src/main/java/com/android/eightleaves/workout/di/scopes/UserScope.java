@@ -1,4 +1,4 @@
-package com.android.eightleaves.workout.di;
+package com.android.eightleaves.workout.di.scopes;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

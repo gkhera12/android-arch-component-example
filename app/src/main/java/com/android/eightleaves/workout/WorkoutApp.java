@@ -5,8 +5,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.android.eightleaves.workout.api.WorkoutService;
-import com.android.eightleaves.workout.di.AppComponent;
-import com.android.eightleaves.workout.di.DaggerAppComponent;
+import com.android.eightleaves.workout.di.components.DaggerWorkoutComponent;
+import com.android.eightleaves.workout.di.components.WorkoutComponent;
 
 public class WorkoutApp extends Application {
     private static WorkoutApp sInstance;
@@ -16,8 +16,8 @@ public class WorkoutApp extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        AppComponent component = DaggerAppComponent.create();
-        workoutService = component.getWorkoutService();
+        WorkoutComponent workoutComponent = DaggerWorkoutComponent.create();
+        workoutService = workoutComponent.getWorkoutService();
     }
 
     public static WorkoutApp getInstance() {

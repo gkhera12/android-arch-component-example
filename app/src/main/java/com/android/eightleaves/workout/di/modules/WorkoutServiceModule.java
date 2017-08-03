@@ -1,7 +1,8 @@
-package com.android.eightleaves.workout.di;
+package com.android.eightleaves.workout.di.modules;
 
 
 import com.android.eightleaves.workout.api.WorkoutService;
+import com.android.eightleaves.workout.di.scopes.UserScope;
 
 import dagger.Module;
 import dagger.Provides;
