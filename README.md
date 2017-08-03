@@ -1,4 +1,4 @@
-# Android Lifecycle Component Example
+# Android Lifecycle Component Example with Dagger2
 
 ### Shows the use of Lifecycle Components: LiveData, Room, Repository
 ### Uses Retrofit Call to remote endpt.
