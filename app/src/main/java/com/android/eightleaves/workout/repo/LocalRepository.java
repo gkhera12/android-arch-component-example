@@ -17,19 +17,19 @@ public class LocalRepository {
     private static LocalRepository sInstance;
     private WorkoutDao workoutDao ;
 
-    public synchronized static LocalRepository getInstance(Context context) {
+    public synchronized static LocalRepository getInstance(Context context, WorkoutDao workoutDao) {
         if (sInstance == null) {
             synchronized (LOCK) {
                 if (sInstance == null) {
-                    sInstance = new LocalRepository(context);
+                    sInstance = new LocalRepository(context, workoutDao);
                 }
             }
         }
         return sInstance;
     }
 
-    private LocalRepository(Context context) {
-        this.workoutDao = DatabaseCreator.getInstance(context).getDatabase().workoutDao();
+    private LocalRepository(Context context, WorkoutDao workoutDao) {
+        this.workoutDao = workoutDao;
     }
 
     public LiveData<List<WorkoutEntity>> getWorkouts() {

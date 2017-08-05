@@ -19,6 +19,8 @@ import com.android.eightleaves.workout.workout.viewmodel.WorkoutViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -34,6 +36,7 @@ public class WorkoutFragment extends LifecycleFragment {
     private FragmentWorkoutBinding mBinding;
     private WorkoutRecyclerViewAdapter mWorkoutAdapter;
     List<Float> dataList = new ArrayList<>();
+    private final CompositeDisposable disposables = new CompositeDisposable();
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -73,7 +76,7 @@ public class WorkoutFragment extends LifecycleFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        WorkoutViewModel.Factory factory = new WorkoutViewModel.Factory(getActivity().getApplication());
+        WorkoutViewModel.Factory factory = new WorkoutViewModel.Factory(getActivity().getApplication(), disposables);
         final WorkoutViewModel viewModel =
                 ViewModelProviders.of(this, factory).get(WorkoutViewModel.class);
         subscribeUi(viewModel);
@@ -95,5 +98,11 @@ public class WorkoutFragment extends LifecycleFragment {
     }
 
     public void onListFragmentInteraction(Workout item){
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disposables.clear();
     }
 }

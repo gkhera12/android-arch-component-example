@@ -22,6 +22,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 
 public class WorkoutViewModel extends AndroidViewModel {
     private static final MutableLiveData ABSENT = new MutableLiveData();
@@ -33,14 +35,14 @@ public class WorkoutViewModel extends AndroidViewModel {
     }
     private LiveData<List<WorkoutEntity>> mObservableWorkouts;
 
-    public WorkoutViewModel(final Application application) {
+    public WorkoutViewModel(final Application application, CompositeDisposable disposable) {
         super(application);
 
         final RemoteRepository remoteRepository = RemoteRepository.getInstance(((WorkoutApp)application).getWorkoutService());
         final DatabaseCreator databaseCreator;
 
         //Todo Dagger injection for this
-        databaseCreator = DatabaseCreator.getInstance(this.getApplication());
+        databaseCreator = DatabaseCreator.getInstance(this.getApplication(), disposable);
         LiveData<Boolean> databaseCreated = databaseCreator.isDatabaseCreated();
         final Context context = getApplication().getApplicationContext();
         mObservableWorkouts = Transformations.switchMap(databaseCreated,
@@ -56,7 +58,8 @@ public class WorkoutViewModel extends AndroidViewModel {
                             cal.setTime(new Date());
                             cal.add(Calendar.DAY_OF_YEAR, -1);
                             //Todo  Dagger injection for this
-                            mWorkoutRepository = WorkoutRepository.getInstance(remoteRepository, LocalRepository.getInstance(application.getApplicationContext()));
+                            mWorkoutRepository = WorkoutRepository.getInstance(remoteRepository,
+                                    LocalRepository.getInstance(application.getApplicationContext(),databaseCreator.getDatabase().workoutDao()));
                             return mWorkoutRepository.getWorkoutsData();
                         }
                     }
@@ -74,16 +77,17 @@ public class WorkoutViewModel extends AndroidViewModel {
 
         @NonNull
         private final Application mApplication;
+        private final CompositeDisposable disposables;
 
-        public Factory(@NonNull Application application) {
+        public Factory(@NonNull Application application, CompositeDisposable disposables) {
             mApplication = application;
-
+            this.disposables = disposables;
         }
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
             //noinspection unchecked
-            return (T) new WorkoutViewModel(mApplication);
+            return (T) new WorkoutViewModel(mApplication,disposables);
         }
     }
 }
